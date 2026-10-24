@@ -3,325 +3,362 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#0a0a0a">
-<title>LEDGER / 가계부</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101010">
+<title>LEDGER / STEEL EDITION</title>
 <style>
 :root {
-  --bg:#0a0a0a;--card:#141414;--line:#303030;
-  --white:#f5f5f5;--gray:#888;--red:#ff4545;--green:#42df8a;
+ --bg:#090a0b;--panel:#151617;--line:#444648;
+ --white:#f0f0f0;--gray:#96999b;
+ --red:#ff4949;--green:#42e394;
+ --steel:linear-gradient(135deg,#35383a 0%,#a8abad 15%,#515557 27%,#d7d8d8 36%,#666a6c 48%,#242627 63%,#888c8e 77%,#343637 100%);
+ --steel-button:linear-gradient(145deg,#383a3b,#171819 48%,#343637);
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--white);
-font-family:Arial,"Noto Sans KR",sans-serif;font-size:14px}
+body{
+ margin:0;color:var(--white);background:
+ repeating-linear-gradient(117deg,transparent 0,transparent 3px,#ffffff03 4px,#ffffff03 5px),
+ radial-gradient(ellipse at 50% -20%,#303234 0%,#121314 45%,#070808 100%);
+ background-attachment:fixed;
+ font-family:Arial,"Noto Sans KR",sans-serif;font-size:14px;
+}
 button,input,select{font:inherit}
-button{cursor:pointer;color:inherit;background:#191919;border:1px solid var(--line);border-radius:2px;padding:11px}
-input,select{width:100%;padding:12px;background:#090909;color:white;border:1px solid var(--line);border-radius:2px}
-button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid white}
-button:hover{border-color:#777}
-header{padding:23px 20px;border-bottom:1px solid var(--line)}
-.brand{font-size:22px;font-weight:900;letter-spacing:3px}
-.brand small{display:block;font-size:9px;color:var(--gray);letter-spacing:2px;margin-top:6px}
-.shell{max-width:850px;margin:auto;padding:22px 18px 100px}
+button{color:var(--white);cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid white;outline-offset:2px}
+button:disabled{opacity:.4}
+input,select{
+ width:100%;min-width:0;padding:12px;color:white;
+ border:1px solid #484b4d;border-radius:2px;
+ background:linear-gradient(180deg,#090a0b,#171819);
+}
+button{
+ border:1px solid #55595b;border-radius:2px;
+ background:var(--steel-button);
+ box-shadow:inset 0 1px 0 #ffffff20,0 2px 3px #0008;
+}
+button:hover{border-color:#c5c7c8}
+button:active{transform:translateY(1px)}
+header{
+ padding:23px 20px 19px;border-bottom:1px solid #65696b;
+ background:linear-gradient(180deg,#242627,#101112);
+ box-shadow:0 3px 12px #0008;
+}
+.brand{font-size:24px;font-weight:950;letter-spacing:4px;text-shadow:0 1px 1px #fff5}
+.brand small{display:block;font-size:9px;color:#aaa;letter-spacing:3px;margin-top:7px}
+.topline{height:2px;margin-top:15px;background:var(--steel)}
+.nav{
+ display:flex;gap:5px;max-width:850px;margin:auto;padding:12px 15px 0;
+}
+.nav button{
+ flex:1;min-width:0;padding:12px 3px;font-size:11px;color:#aeb0b1;
+}
+.nav button.active{
+ color:#111;border-color:#ddd;
+ background:linear-gradient(180deg,#f5f5f5,#999c9e 48%,#d9dada);
+ box-shadow:inset 0 1px white,0 0 9px #ffffff10;
+ font-weight:900;
+}
+.shell{max-width:850px;margin:auto;padding:24px 16px 50px;min-height:65vh}
 .page{display:none}
-.page.active{display:block}
-.heading{font-size:19px;font-weight:800;margin:0 0 6px}
-.sub{font-size:11px;color:var(--gray);margin-bottom:22px}
-.nav{display:flex;gap:5px;max-width:850px;margin:auto;padding:12px 18px 0}
-.nav button{flex:1;font-size:12px;color:#888;padding:13px 5px}
-.nav button.active{background:#eee;color:#111;border-color:#eee;font-weight:bold}
-.box{border:1px solid var(--line);background:var(--card);padding:17px;margin-bottom:12px}
-.label{font-size:11px;color:var(--gray);margin-bottom:10px}
-.month{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.month strong{font-size:20px}
-.month button{padding:7px 14px}
+.page.active{display:block;animation:appear .2s ease}
+@keyframes appear{from{opacity:.45;transform:translateX(8px)}to{opacity:1;transform:translateX(0)}}
+.heading{font-size:19px;font-weight:900;letter-spacing:1px;margin:0 0 7px}
+.sub{font-size:11px;color:var(--gray);margin-bottom:22px;line-height:1.7}
+.box,.stat{
+ background:linear-gradient(145deg,#1c1e1f,#101112 65%,#1a1b1c);
+ border:1px solid #484b4d;
+ box-shadow:inset 0 1px 0 #ffffff0b,0 5px 12px #0004;
+}
+.box{padding:17px;margin-bottom:13px;position:relative}
+.box:before{
+ content:"";position:absolute;left:0;right:0;top:0;height:1px;
+ background:linear-gradient(90deg,transparent,#aeb2b4,#ffffff30,transparent);
+}
+.label{font-size:10px;letter-spacing:1px;color:#a4a7a9;margin-bottom:10px}
+.month{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}
+.month strong{font-size:21px;letter-spacing:1px}
+.month button{width:39px;height:35px;font-size:18px}
 .stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.stat{padding:16px 12px;border:1px solid var(--line);background:var(--card);min-width:0}
+.stat{padding:15px 12px;min-width:0;position:relative}
 .stat:last-child{grid-column:1/-1}
-.value{font-size:clamp(19px,4vw,25px);font-weight:800;overflow-wrap:anywhere}
-.green{color:var(--green)}.red{color:var(--red)}
+.stat:before{content:"";position:absolute;top:-1px;left:0;right:0;height:2px;background:linear-gradient(90deg,#333,#c6c9ca,#555)}
 .stat .label{margin-bottom:12px}
-.quick{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
-.quick button{padding:16px;font-weight:bold}
-.quick .out{color:var(--red);border-color:#552222}
-.quick .in{color:var(--green);border-color:#214c34}
+.value{font-size:clamp(19px,4.3vw,25px);font-weight:900;overflow-wrap:anywhere;letter-spacing:-.5px}
+.green{color:var(--green)}.red{color:var(--red)}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:14px 0 23px}
+.quick button{padding:15px;font-weight:bold}
+.quick .out{color:var(--red);border-color:#733434}
+.quick .in{color:var(--green);border-color:#286647}
 .row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.row strong{font-size:14px}
+.row strong{font-size:13px}
 .small-btn{padding:7px 10px;font-size:11px}
-.entry{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #282828}
+.entry{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid #303233}
 .entry:last-child{border-bottom:0}
 .entry-title{font-weight:bold;overflow-wrap:anywhere}
-.meta{font-size:10px;color:var(--gray);margin-top:7px}
-.amount{font-weight:bold;text-align:right;overflow-wrap:anywhere}
+.meta{font-size:10px;color:var(--gray);margin-top:7px;line-height:1.6}
+.amount{font-size:14px;font-weight:900;text-align:right;overflow-wrap:anywhere}
 .entry-buttons{display:flex;gap:5px;margin-top:8px;justify-content:flex-end}
-.entry-buttons button{padding:5px 8px;font-size:10px;color:#aaa}
-.field{margin-bottom:16px}
-.field label{display:block;color:#aaa;font-size:11px;margin-bottom:8px}
-.switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
-.switch button{color:#888}
-.switch button.active.expense{color:var(--red);border-color:var(--red);background:#291313}
-.switch button.active.income{color:var(--green);border-color:var(--green);background:#11251a}
-.amount-input{font-size:25px;font-weight:bold;text-align:right}
-.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
-.calc button{padding:12px 3px}
-.calc .op{background:#252525}
-.calc .equals{background:#eee;color:#111}
+.entry-buttons button{padding:5px 8px;font-size:10px;color:#bbb}
+.field{margin-bottom:17px}
+.field label{display:block;color:#b5b7b8;font-size:11px;margin-bottom:8px}
+.switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:20px}
+.switch button{padding:13px;color:#888}
+.switch button.active.expense{color:var(--red);border-color:var(--red);background:linear-gradient(135deg,#301515,#151010)}
+.switch button.active.income{color:var(--green);border-color:var(--green);background:linear-gradient(135deg,#102b1d,#101612)}
+.amount-input{font-size:27px;font-weight:900;text-align:right;padding:17px}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:9px}
+.calc button{padding:13px 2px;font-size:15px}
+.calc .op{background:linear-gradient(145deg,#494c4e,#202223)}
+.calc .equals{color:#111;background:linear-gradient(180deg,#fff,#96999b);font-weight:900}
 .calc .ship{grid-column:span 2;color:var(--green)}
 .calc .zero{grid-column:span 2}
-.hint{font-size:10px;color:var(--gray);min-height:16px;margin-top:8px}
-.primary{width:100%;background:#eee;color:#111;border-color:#eee;font-weight:bold;padding:14px}
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.hint{font-size:10px;color:var(--gray);min-height:16px;margin-top:9px}
+.primary{
+ width:100%;padding:15px;color:#111;font-weight:900;
+ border:1px solid #eee;
+ background:linear-gradient(180deg,#fff,#b8bbbd 45%,#e4e5e5);
+ box-shadow:inset 0 1px white,0 3px 7px #0008;
+}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:13px}
 .filters input{grid-column:1/-1}
 .pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
-.pills button{font-size:11px;padding:8px 10px;color:#aaa}
-.pills button.active{border-color:#eee;color:white}
+.empty{padding:30px 10px;text-align:center;color:#888;font-size:12px;border:1px dashed #444;line-height:2}
 .catgroup{margin-bottom:24px}
-.catgroup h3{font-size:12px;color:#aaa;margin-bottom:12px}
-.cat{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #292929;padding:12px 0}
-.cat button{padding:5px 9px;color:var(--red)}
-.empty{padding:28px 10px;text-align:center;color:#777;font-size:12px;border:1px dashed #333;line-height:2}
-.notice{font-size:10px;color:#777;line-height:1.8;margin-top:20px}
-dialog{background:#141414;color:white;border:1px solid #555;width:calc(100% - 30px);max-width:360px}
-dialog::backdrop{background:#000b}
-.dialog-actions{display:flex;gap:8px;margin-top:15px}
-.dialog-actions button{flex:1}
+.catgroup h3{font-size:11px;letter-spacing:1px;color:#bbb;margin-bottom:9px}
+.cat{display:flex;justify-content:space-between;align-items:center;padding:12px 2px;border-bottom:1px solid #343637}
+.cat button{padding:6px 9px;color:var(--red);font-size:11px}
+.notice{font-size:10px;color:#8c8e90;line-height:1.8;margin-top:12px}
+dialog{
+ width:calc(100% - 30px);max-width:360px;color:white;
+ background:linear-gradient(145deg,#252728,#101112);
+ border:1px solid #8a8d8f;box-shadow:0 10px 40px #000b;
+}
+dialog::backdrop{background:#000c;backdrop-filter:blur(3px)}
+.dialog-actions{display:flex;gap:8px;margin-top:16px}
+.dialog-actions button{flex:1;padding:12px}
+.footer{text-align:center;color:#65686a;font-size:9px;letter-spacing:2px;padding:15px;border-top:1px solid #292b2c}
 @media(min-width:650px){
- .shell{padding-top:28px}
  .stats{grid-template-columns:repeat(3,1fr)}
  .stat:last-child{grid-column:auto}
  .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
  .home-grid .box{margin-bottom:0}
 }
+@media(max-width:360px){
+ .nav{padding-left:8px;padding-right:8px;gap:3px}
+ .nav button{font-size:10px}
+ .shell{padding-left:11px;padding-right:11px}
+}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">LEDGER<small>PERSONAL FINANCE / 001</small></div>
+ <div class="brand">LEDGER<small>STEEL EDITION / PERSONAL FINANCE</small></div>
+ <div class="topline"></div>
 </header>
 
 <nav class="nav">
-  <button class="active" data-page="home">01 홈</button>
-  <button data-page="add">02 거래 추가</button>
-  <button data-page="history">03 내역</button>
-  <button data-page="settings">04 설정</button>
+ <button class="active" data-page="home">01 홈</button>
+ <button data-page="add">02 추가</button>
+ <button data-page="history">03 내역</button>
+ <button data-page="settings">04 설정</button>
 </nav>
 
-<main class="shell">
-
-<!-- HOME -->
+<main class="shell" id="swipeArea">
 <section class="page active" id="home">
-  <h1 class="heading">OVERVIEW</h1>
-  <div class="sub">이번 달의 자금 현황</div>
-  <div class="month">
-    <button id="prev">←</button>
-    <strong id="month"></strong>
-    <button id="next">→</button>
-  </div>
-  <div class="stats">
-    <div class="stat">
-      <div class="label">총수입 / INCOME</div>
-      <div class="value green" id="incomeSum">0원</div>
-    </div>
-    <div class="stat">
-      <div class="label">총지출 / EXPENSE</div>
-      <div class="value red" id="expenseSum">0원</div>
-    </div>
-    <div class="stat">
-      <div class="label">남은 금액 / BALANCE</div>
-      <div class="value" id="balance">0원</div>
-    </div>
-  </div>
-  <div class="quick">
-    <button class="out" onclick="openAdd('expense')">− 지출 추가</button>
-    <button class="in" onclick="openAdd('income')">＋ 수입 추가</button>
-  </div>
-  <div class="box">
-    <div class="row"><strong>최근 거래</strong><button class="small-btn" onclick="showPage('history')">전체 보기 →</button></div>
-    <div id="recent" style="margin-top:8px"></div>
-  </div>
+ <h1 class="heading">OVERVIEW</h1>
+ <div class="sub">FINANCIAL STATUS / 자금 현황</div>
+ <div class="month">
+  <button id="prev" aria-label="이전 달">←</button>
+  <strong id="month"></strong>
+  <button id="next" aria-label="다음 달">→</button>
+ </div>
+ <div class="stats">
+  <div class="stat"><div class="label">INCOME / 수입</div><div class="value green" id="incomeSum">0원</div></div>
+  <div class="stat"><div class="label">EXPENSE / 지출</div><div class="value red" id="expenseSum">0원</div></div>
+  <div class="stat"><div class="label">BALANCE / 잔액</div><div class="value" id="balance">0원</div></div>
+ </div>
+ <div class="quick">
+  <button class="out" onclick="openAdd('expense')">− 지출 추가</button>
+  <button class="in" onclick="openAdd('income')">＋ 수입 추가</button>
+ </div>
+ <div class="box">
+  <div class="row"><strong>최근 거래</strong><button class="small-btn" onclick="showPage('history')">전체 보기 →</button></div>
+  <div id="recent" style="margin-top:8px"></div>
+ </div>
+ <div class="notice">SWIPE ← → TO CHANGE PAGES</div>
 </section>
 
-<!-- ADD -->
 <section class="page" id="add">
-  <h1 class="heading" id="addHeading">NEW TRANSACTION</h1>
-  <div class="sub">거래 정보를 입력해 줘.</div>
-  <form id="form">
-    <div class="switch">
-      <button type="button" class="active expense" data-type="expense">− 지출</button>
-      <button type="button" data-type="income">＋ 수입</button>
-    </div>
-    <div class="field">
-      <label>금액 / AMOUNT</label>
-      <input id="amount" class="amount-input" inputmode="decimal" placeholder="0" required>
-      <div class="calc">
-        <button type="button" data-key="7">7</button>
-        <button type="button" data-key="8">8</button>
-        <button type="button" data-key="9">9</button>
-        <button type="button" class="op" data-key="÷">÷</button>
-        <button type="button" data-key="4">4</button>
-        <button type="button" data-key="5">5</button>
-        <button type="button" data-key="6">6</button>
-        <button type="button" class="op" data-key="×">×</button>
-        <button type="button" data-key="1">1</button>
-        <button type="button" data-key="2">2</button>
-        <button type="button" data-key="3">3</button>
-        <button type="button" class="op" data-key="−">−</button>
-        <button type="button" class="zero" data-key="0">0</button>
-        <button type="button" data-key=".">.</button>
-        <button type="button" class="op" data-key="+">+</button>
-        <button type="button" data-key="(">(</button>
-        <button type="button" data-key=")">)</button>
-        <button type="button" data-key="back">⌫</button>
-        <button type="button" data-key="clear">AC</button>
-        <button type="button" class="equals" data-key="=">=</button>
-        <button type="button" class="ship" id="shipping">− 배송비 1,800원</button>
-        <button type="button" data-key="ans">ANS</button>
-      </div>
-      <div class="hint" id="hint">계산한 뒤 = 버튼을 눌러도 돼.</div>
-    </div>
-    <div class="field">
-      <label>카테고리</label>
-      <select id="category" required></select>
-    </div>
-    <div class="field">
-      <label>날짜</label>
-      <input type="date" id="date" required>
-    </div>
-    <div class="field">
-      <label>메모</label>
-      <input id="memo" maxlength="100" placeholder="예: 아크릴 키링 구매">
-    </div>
-    <button class="primary" id="saveBtn">거래 내역 저장</button>
-    <button type="button" id="cancelEdit" style="width:100%;margin-top:8px;display:none">수정 취소</button>
-  </form>
+ <h1 class="heading" id="addHeading">NEW TRANSACTION</h1>
+ <div class="sub">거래 금액과 정보를 입력해 줘.</div>
+ <form id="form">
+  <div class="switch">
+   <button type="button" class="active expense" data-type="expense">− 지출</button>
+   <button type="button" data-type="income">＋ 수입</button>
+  </div>
+  <div class="field">
+   <label>AMOUNT / 금액</label>
+   <input id="amount" class="amount-input" inputmode="decimal" placeholder="0" required>
+   <div class="calc">
+    <button type="button" data-key="7">7</button><button type="button" data-key="8">8</button><button type="button" data-key="9">9</button><button type="button" class="op" data-key="÷">÷</button>
+    <button type="button" data-key="4">4</button><button type="button" data-key="5">5</button><button type="button" data-key="6">6</button><button type="button" class="op" data-key="×">×</button>
+    <button type="button" data-key="1">1</button><button type="button" data-key="2">2</button><button type="button" data-key="3">3</button><button type="button" class="op" data-key="−">−</button>
+    <button type="button" class="zero" data-key="0">0</button><button type="button" data-key=".">.</button><button type="button" class="op" data-key="+">+</button>
+    <button type="button" data-key="(">(</button><button type="button" data-key=")">)</button><button type="button" data-key="back">⌫</button><button type="button" data-key="clear">AC</button>
+    <button type="button" class="equals" data-key="=">=</button><button type="button" class="ship" id="shipping">− 배송비 1,800원</button><button type="button" data-key="ans">ANS</button>
+   </div>
+   <div class="hint" id="hint">숫자와 연산자를 입력해 줘.</div>
+  </div>
+  <div class="field"><label>CATEGORY / 카테고리</label><select id="category" required></select></div>
+  <div class="field"><label>DATE / 날짜</label><input type="date" id="date" required></div>
+  <div class="field"><label>MEMO / 메모</label><input id="memo" maxlength="100" placeholder="예: 키링 구매"></div>
+  <button class="primary" id="saveBtn">거래 내역 저장</button>
+  <button type="button" id="cancelEdit" style="width:100%;padding:12px;margin-top:8px;display:none">수정 취소</button>
+ </form>
 </section>
 
-<!-- HISTORY -->
 <section class="page" id="history">
-  <h1 class="heading">HISTORY</h1>
-  <div class="sub">저장된 거래 내역</div>
-  <div class="filters">
-    <input id="search" placeholder="메모 또는 카테고리 검색">
-    <select id="filterType">
-      <option value="all">전체 종류</option>
-      <option value="income">수입</option>
-      <option value="expense">지출</option>
-    </select>
-    <select id="filterMonth"><option value="all">전체 기간</option></select>
-    <select id="filterCat"><option value="all">전체 카테고리</option></select>
-  </div>
-  <div class="row"><strong id="count">0건</strong><span id="historySum" style="font-size:11px;color:#999"></span></div>
-  <div id="historyList" style="margin-top:8px"></div>
+ <h1 class="heading">TRANSACTION LOG</h1>
+ <div class="sub">거래 기록 검색 및 관리</div>
+ <div class="filters">
+  <input id="search" placeholder="메모 / 카테고리 검색">
+  <select id="filterType"><option value="all">전체 종류</option><option value="income">수입</option><option value="expense">지출</option></select>
+  <select id="filterMonth"><option value="all">전체 기간</option></select>
+  <select id="filterCat"><option value="all">전체 카테고리</option></select>
+ </div>
+ <div class="row"><strong id="count">0건</strong><span id="historySum" style="font-size:11px;color:#aaa"></span></div>
+ <div id="historyList" style="margin-top:8px"></div>
 </section>
 
-<!-- SETTINGS -->
 <section class="page" id="settings">
-  <h1 class="heading">SETTINGS</h1>
-  <div class="sub">카테고리 관리</div>
-  <div class="box">
-    <div class="row">
-      <strong>카테고리</strong>
-      <button class="small-btn" id="addCat">＋ 추가</button>
-    </div>
-    <div id="categories" style="margin-top:15px"></div>
-  </div>
-  <div class="box">
-    <strong>데이터 관리</strong>
-    <p class="notice">기록은 현재 브라우저에 저장돼. 기기를 바꾸거나 브라우저 데이터를 삭제하면 기록이 사라질 수 있으니 정기적으로 백업해 줘.</p>
-    <button id="export" style="width:100%;margin-top:10px">거래 내역 백업 (.json)</button>
-    <label for="importFile" style="display:block;margin-top:10px;border:1px solid #333;padding:12px;text-align:center;cursor:pointer">백업 파일 불러오기</label>
-    <input type="file" id="importFile" accept=".json,application/json" style="display:none">
-  </div>
-</section>
+ <h1 class="heading">SYSTEM SETTINGS</h1>
+ <div class="sub">기본 잔액 및 카테고리 설정</div>
 
+ <div class="box">
+  <div class="label">INITIAL BALANCE / 기본 잔액</div>
+  <p style="font-size:12px;color:#bbb;line-height:1.8;margin:0 0 14px">
+   가계부를 시작할 때 이미 가지고 있던 돈을 입력해 줘. 거래 내역에는 등록되지 않고 잔액 계산에만 반영돼.
+  </p>
+  <label for="initialBalance" style="display:block;font-size:11px;color:#aaa;margin-bottom:8px">처음 보유한 금액 (원)</label>
+  <input id="initialBalance" type="number" step="1" inputmode="decimal" placeholder="예: 50000">
+  <button id="saveInitial" class="primary" style="margin-top:12px">기본 잔액 저장</button>
+  <div class="notice">기본 잔액은 전체 기간에 적용돼. 월별 잔액에도 시작 자산으로 포함돼.</div>
+ </div>
+
+ <div class="box">
+  <div class="row"><strong>카테고리 관리</strong><button class="small-btn" id="addCat">＋ 추가</button></div>
+  <div id="categories" style="margin-top:17px"></div>
+ </div>
+
+ <div class="box">
+  <strong>데이터 백업</strong>
+  <p class="notice">기록은 이 브라우저에 저장돼. 기기를 바꾸거나 브라우저 데이터를 삭제하기 전에 백업해 줘.</p>
+  <button id="export" style="width:100%;padding:12px;margin-top:10px">백업 파일 내보내기 (.json)</button>
+  <label for="importFile" style="display:block;text-align:center;padding:12px;border:1px solid #555;margin-top:9px;cursor:pointer">백업 파일 불러오기</label>
+  <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+ </div>
+</section>
 </main>
 
+<div class="footer">LEDGER / STEEL EDITION / V.3</div>
+
 <dialog id="catDialog">
-  <form id="catForm">
-    <h3>카테고리 추가</h3>
-    <div class="field"><label>종류</label>
-      <select id="catType"><option value="expense">지출</option><option value="income">수입</option></select>
-    </div>
-    <div class="field"><label>이름</label><input id="catName" maxlength="25" required placeholder="예: 문구"></div>
-    <div class="dialog-actions">
-      <button type="button" id="catClose">취소</button>
-      <button type="submit">추가</button>
-    </div>
-  </form>
+ <form id="catForm">
+  <h3>NEW CATEGORY</h3>
+  <div class="field"><label>종류</label><select id="catType"><option value="expense">지출</option><option value="income">수입</option></select></div>
+  <div class="field"><label>카테고리 이름</label><input id="catName" maxlength="25" required placeholder="예: 문구"></div>
+  <div class="dialog-actions"><button type="button" id="catClose">취소</button><button type="submit">추가</button></div>
+ </form>
 </dialog>
 
 <script>
-(() => {
+(()=>{
 "use strict";
-const $ = id => document.getElementById(id);
-const KEY = "ledger-simple-v2";
-const defaults = {expense:["굿즈","기타"],income:["커미션","중고거래"]};
-let db = load();
-let type = "expense";
-let expr = "";
-let ans = 0;
-let editId = null;
-let month = new Date();
-month = new Date(month.getFullYear(),month.getMonth(),1);
+const $=id=>document.getElementById(id);
+const KEY="ledger-steel-v3";
+const defaults={expense:["굿즈","기타"],income:["커미션","중고거래"]};
+const pages=["home","add","history","settings"];
+let db=load(),type="expense",expr="",ans=0,editId=null;
+let month=new Date();month=new Date(month.getFullYear(),month.getMonth(),1);
+let touchStart=null,lastSwipe=0;
 
 function load(){
  try{
-  const d = JSON.parse(localStorage.getItem(KEY));
-  if(!d) return {items:[],cats:structuredClone(defaults)};
-  return {
+  const d=JSON.parse(localStorage.getItem(KEY));
+  if(!d)return{items:[],cats:structuredClone(defaults),initialBalance:0};
+  return{
    items:Array.isArray(d.items)?d.items:[],
    cats:{
     expense:Array.isArray(d.cats?.expense)?d.cats.expense:[...defaults.expense],
     income:Array.isArray(d.cats?.income)?d.cats.income:[...defaults.income]
-   }
+   },
+   initialBalance:Number.isFinite(Number(d.initialBalance))?Number(d.initialBalance):0
   };
- }catch{return {items:[],cats:structuredClone(defaults)}}
+ }catch{return{items:[],cats:structuredClone(defaults),initialBalance:0}}
 }
-function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch{alert("저장 공간이 부족해. 백업해 줘.")}}
 function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 function won(n){return Math.round(n).toLocaleString("ko-KR")+"원"}
-function ym(s){return s.slice(0,7)}
+function ym(s){return String(s||"").slice(0,7)}
 function today(){
  const d=new Date();
  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 function showPage(id){
+ if(!pages.includes(id))return;
  document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
  document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
- if(id==="history")renderHistory();
  if(id==="home")renderHome();
- if(id==="settings")renderCats();
- window.scrollTo(0,0);
+ if(id==="history")renderHistory();
+ if(id==="settings"){renderCats();$("initialBalance").value=db.initialBalance}
+ window.scrollTo({top:0,behavior:"smooth"});
 }
 window.showPage=showPage;
 document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
-window.openAdd = t => {
- if(!editId) resetForm();
- setType(t);
- showPage("add");
-};
+window.openAdd=t=>{if(!editId)resetForm();setType(t);showPage("add")};
+
+// Swipe between pages. Ignore horizontal swipes on controls and dialogs.
+const swipeArea=$("swipeArea");
+swipeArea.addEventListener("touchstart",e=>{
+ if(e.touches.length!==1)return;
+ const target=e.target;
+ if(target.closest("input,select,textarea,button,dialog")){touchStart=null;return}
+ touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};
+},{passive:true});
+swipeArea.addEventListener("touchend",e=>{
+ if(!touchStart)return;
+ const dx=e.changedTouches[0].clientX-touchStart.x;
+ const dy=e.changedTouches[0].clientY-touchStart.y;
+ touchStart=null;
+ if(Math.abs(dx)<65||Math.abs(dx)<Math.abs(dy)*1.25)return;
+ const now=Date.now();if(now-lastSwipe<350)return;lastSwipe=now;
+ const current=pages.findIndex(p=>$(p).classList.contains("active"));
+ const next=current+(dx<0?1:-1);
+ if(next>=0&&next<pages.length)showPage(pages[next]);
+},{passive:true});
 
 function setType(t){
  type=t;
  document.querySelectorAll("[data-type]").forEach(b=>{
   b.classList.toggle("active",b.dataset.type===t);
-  b.classList.toggle(t,b.dataset.type===t);
+  b.classList.toggle("expense",t==="expense"&&b.dataset.type===t);
+  b.classList.toggle("income",t==="income"&&b.dataset.type===t);
  });
  renderSelects();
 }
 document.querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>setType(b.dataset.type));
 
 function renderSelects(){
- const list=db.cats[type];
- $("category").innerHTML=list.length?list.map(c=>`<option>${esc(c)}</option>`).join(""):'<option value="">설정에서 카테고리를 추가해 줘</option>';
- const old=$("filterCat").value;
- const all=[...new Set([...db.cats.expense,...db.cats.income])];
+ const list=db.cats[type],old=$("category").value;
+ $("category").innerHTML=list.length?list.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join(""):'<option value="">설정에서 카테고리를 추가해 줘</option>';
+ if(list.includes(old))$("category").value=old;
+ const all=[...new Set([...db.cats.expense,...db.cats.income])],fc=$("filterCat").value;
  $("filterCat").innerHTML='<option value="all">전체 카테고리</option>'+all.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
- if(all.includes(old))$("filterCat").value=old;
- const selected=$("filterMonth").value;
- const months=[...new Set(db.items.map(t=>ym(t.date)))].sort().reverse();
+ if(all.includes(fc))$("filterCat").value=fc;
+ const months=[...new Set(db.items.map(t=>ym(t.date)))].filter(Boolean).sort().reverse(),fm=$("filterMonth").value;
  $("filterMonth").innerHTML='<option value="all">전체 기간</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join("");
- if(months.includes(selected))$("filterMonth").value=selected;
+ if(months.includes(fm))$("filterMonth").value=fm;
 }
 
 function evaluate(src){
@@ -333,9 +370,9 @@ function evaluate(src){
  function atom(){
   if(tok[i]==="+"){i++;return atom()}
   if(tok[i]==="-"){i++;return -atom()}
-  if(tok[i]==="("){i++;let n=sum();if(tok[i++]!==")")throw Error("괄호를 확인해 줘.");return n}
+  if(tok[i]==="("){i++;let n=sum();if(tok[i]!==")")throw Error("괄호를 확인해 줘.");i++;return n}
   const x=tok[i++];
-  if(!x||! /^\d*\.?\d+$/.test(x))throw Error("숫자를 확인해 줘.");
+  if(!x||!/^\d*\.?\d+$/.test(x))throw Error("숫자를 확인해 줘.");
   return Number(x);
  }
  function mul(){
@@ -350,22 +387,21 @@ function evaluate(src){
  function sum(){
   let n=mul();
   while(tok[i]==="+"||tok[i]==="-"){
-   const op=tok[i++],v=mul();
-   n=op==="+"?n+v:n-v;
+   const op=tok[i++],v=mul();n=op==="+"?n+v:n-v;
   }
   return n;
  }
  const n=sum();
- if(i!==tok.length||!Number.isFinite(n))throw Error("계산식을 확인해 줨.");
+ if(i!==tok.length||!Number.isFinite(n))throw Error("계산식을 확인해 줘.");
  return n;
 }
-function displayExpr(){ $("amount").value=expr; }
+function displayExpr(){$("amount").value=expr}
 function key(k){
  if(k==="clear")expr="";
  else if(k==="back")expr=expr.slice(0,-1);
  else if(k==="ans")expr+=String(ans);
  else if(k==="="){
-  try{ans=evaluate(expr);expr=String(Math.round(ans*100)/100);$("hint").textContent="계산 완료";}
+  try{ans=evaluate(expr);expr=String(Math.round(ans*100)/100);$("hint").textContent="계산 완료"}
   catch(e){$("hint").textContent=e.message;return}
  }else expr+=k;
  displayExpr();
@@ -378,56 +414,51 @@ $("amount").addEventListener("input",e=>{
 $("shipping").onclick=()=>{
  try{
   const n=expr?evaluate(expr):0;
-  ans=Math.round((n-1800)*100)/100;
-  expr=String(ans);displayExpr();
-  $("hint").textContent="1,800원 차감 완료";
+  ans=Math.round((n-1800)*100)/100;expr=String(ans);displayExpr();
+  $("hint").textContent="배송비 1,800원 차감 완료";
  }catch(e){$("hint").textContent=e.message}
 };
 
 function resetForm(){
- editId=null;expr="";
- $("form").reset();
- $("date").value=today();
- $("hint").textContent="계산한 뒤 = 버튼을 눌러도 돼.";
+ editId=null;expr="";$("form").reset();$("date").value=today();
+ $("hint").textContent="숫자와 연산자를 입력해 줘.";
  $("addHeading").textContent="NEW TRANSACTION";
- $("saveBtn").textContent="거래 내역 저장";
- $("cancelEdit").style.display="none";
- setType("expense");
- $("amount").value="";
+ $("saveBtn").textContent="거래 내역 저장";$("cancelEdit").style.display="none";
+ setType("expense");$("amount").value="";
 }
-$("cancelEdit").onclick=()=>resetForm();
+$("cancelEdit").onclick=resetForm;
 
 $("form").onsubmit=e=>{
  e.preventDefault();
  let amount;
  try{amount=evaluate(expr)}catch(err){$("hint").textContent=err.message;return}
- if(amount<=0||!Number.isFinite(amount)){alert("금액은 0원보다 커야 해.");return}
+ if(!Number.isFinite(amount)||amount<=0){alert("금액은 0원보다 커야 해.");return}
  if(amount>1e15){alert("금액이 너무 커.");return}
- const date=$("date").value;
- if(!date){alert("날짜를 입력해 줘.");return}
+ if(!$("date").value||!$("category").value){alert("날짜와 카테고리를 확인해 줘.");return}
  const item={
   id:editId||`${Date.now()}-${Math.random().toString(36).slice(2)}`,
-  type,amount:Math.round(amount*100)/100,
-  category:$("category").value,date,
-  memo:$("memo").value.trim(),createdAt:Date.now()
+  type,amount:Math.round(amount*100)/100,category:$("category").value,
+  date:$("date").value,memo:$("memo").value.trim(),createdAt:Date.now()
  };
- if(!item.category){alert("카테고리를 먼저 추가해 줘.");return}
  if(editId){
   const i=db.items.findIndex(x=>x.id===editId);
-  if(i>=0){item.createdAt=db.items[i].createdAt;db.items[i]=item}
+  if(i>=0){item.createdAt=db.items[i].createdAt||Date.now();db.items[i]=item}
  }else db.items.push(item);
  save();resetForm();renderAll();showPage("home");
 };
 
 function renderHome(){
  $("month").textContent=`${month.getFullYear()}.${String(month.getMonth()+1).padStart(2,"0")}`;
- const items=db.items.filter(t=>ym(t.date)===`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,"0")}`);
+ const m=`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,"0")}`;
+ const items=db.items.filter(t=>ym(t.date)===m);
  const inc=items.filter(t=>t.type==="income").reduce((s,t)=>s+t.amount,0);
  const out=items.filter(t=>t.type==="expense").reduce((s,t)=>s+t.amount,0);
+ // 기본 잔액은 거래 내역이 아닌 별도의 시작 자산이다.
+ const bal=db.initialBalance+inc-out;
  $("incomeSum").textContent=won(inc);
  $("expenseSum").textContent=won(out);
- $("balance").textContent=won(inc-out);
- $("balance").style.color=inc-out<0?"var(--red)":"var(--white)";
+ $("balance").textContent=won(bal);
+ $("balance").style.color=bal<0?"var(--red)":"var(--white)";
  const recent=[...items].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0)).slice(0,5);
  $("recent").innerHTML=recent.length?recent.map(t=>entryHTML(t,false)).join(""):'<div class="empty">아직 거래 내역이 없어.<br>첫 거래를 추가해 봐.</div>';
 }
@@ -436,46 +467,29 @@ $("next").onclick=()=>{month.setMonth(month.getMonth()+1);renderHome()};
 
 function entryHTML(t,actions=true){
  return `<div class="entry">
-  <div style="min-width:0">
-   <div class="entry-title">${esc(t.memo||t.category)}</div>
-   <div class="meta">${esc(t.date)} · ${esc(t.category)}</div>
-  </div>
-  <div>
-   <div class="amount ${t.type==="income"?"green":"red"}">${t.type==="income"?"+":"−"}${won(t.amount)}</div>
-   ${actions?`<div class="entry-buttons"><button data-edit="${esc(t.id)}">수정</button><button data-del="${esc(t.id)}">삭제</button></div>`:""}
-  </div>
- </div>`;
+ <div style="min-width:0"><div class="entry-title">${esc(t.memo||t.category)}</div><div class="meta">${esc(t.date)} · ${esc(t.category)}</div></div>
+ <div><div class="amount ${t.type==="income"?"green":"red"}">${t.type==="income"?"+":"−"}${won(t.amount)}</div>
+ ${actions?`<div class="entry-buttons"><button data-edit="${esc(t.id)}">수정</button><button data-del="${esc(t.id)}">삭제</button></div>`:""}</div></div>`;
 }
 function renderHistory(){
  renderSelects();
- const q=$("search").value.trim().toLowerCase();
- const ft=$("filterType").value,fc=$("filterCat").value,fm=$("filterMonth").value;
- const list=[...db.items].filter(t=>
-  (ft==="all"||t.type===ft)&&
-  (fc==="all"||t.category===fc)&&
-  (fm==="all"||ym(t.date)===fm)&&
-  (!q||`${t.memo} ${t.category} ${t.date}`.toLowerCase().includes(q))
- ).sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+ const q=$("search").value.trim().toLowerCase(),ft=$("filterType").value,fc=$("filterCat").value,fm=$("filterMonth").value;
+ const list=[...db.items].filter(t=>(ft==="all"||t.type===ft)&&(fc==="all"||t.category===fc)&&(fm==="all"||ym(t.date)===fm)&&(!q||`${t.memo} ${t.category} ${t.date}`.toLowerCase().includes(q))).sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
  const net=list.reduce((s,t)=>s+(t.type==="income"?t.amount:-t.amount),0);
  $("count").textContent=`${list.length}건`;
  $("historySum").textContent=`순합계 ${won(net)}`;
  $("historyList").innerHTML=list.length?list.map(t=>entryHTML(t,true)).join(""):'<div class="empty">기록이 없어.</div>';
 }
-["search","filterType","filterCat","filterMonth"].forEach(id=>{
- $(id).addEventListener(id==="search"?"input":"change",renderHistory);
-});
+["search","filterType","filterCat","filterMonth"].forEach(id=>$(id).addEventListener(id==="search"?"input":"change",renderHistory));
+
 document.addEventListener("click",e=>{
- const edit=e.target.closest("[data-edit]");
- const del=e.target.closest("[data-del]");
+ const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-del]");
  if(edit){
   const t=db.items.find(x=>x.id===edit.dataset.edit);if(!t)return;
-  editId=t.id;expr=String(t.amount);setType(t.type);
-  $("category").value=t.category;$("date").value=t.date;
-  $("memo").value=t.memo||"";displayExpr();
-  $("addHeading").textContent="EDIT TRANSACTION";
-  $("saveBtn").textContent="변경 사항 저장";
-  $("cancelEdit").style.display="block";
-  showPage("add");
+  editId=t.id;expr=String(t.amount);setType(t.type);$("category").value=t.category;
+  $("date").value=t.date;$("memo").value=t.memo||"";displayExpr();
+  $("addHeading").textContent="EDIT TRANSACTION";$("saveBtn").textContent="변경 사항 저장";
+  $("cancelEdit").style.display="block";showPage("add");
  }
  if(del){
   if(!confirm("이 거래 내역을 삭제할까?"))return;
@@ -484,19 +498,23 @@ document.addEventListener("click",e=>{
  }
 });
 
+$("saveInitial").onclick=()=>{
+ const raw=$("initialBalance").value;
+ const value=Number(raw);
+ if(raw.trim()===""||!Number.isFinite(value)||Math.abs(value)>1e15){alert("기본 잔액을 확인해 줘.");return}
+ db.initialBalance=Math.round(value*100)/100;
+ save();renderAll();alert("기본 잔액을 저장했어.");
+};
+
 function renderCats(){
  $("categories").innerHTML=["expense","income"].map(t=>`
  <div class="catgroup"><h3>${t==="expense"?"− 지출 카테고리":"＋ 수입 카테고리"}</h3>
- ${db.cats[t].map(c=>`<div class="cat"><span>${esc(c)}</span><button data-catdel="${esc(c)}" data-cattype="${t}">삭제</button></div>`).join("")||'<div class="meta">카테고리가 없어.</div>'}
- </div>`).join("");
+ ${db.cats[t].map(c=>`<div class="cat"><span>${esc(c)}</span><button data-catdel="${esc(c)}" data-cattype="${t}">삭제</button></div>`).join("")||'<div class="meta">카테고리가 없어.</div>'}</div>`).join("");
 }
-$("addCat").onclick=()=>{
- $("catType").value="expense";$("catName").value="";$("catDialog").showModal();
-};
+$("addCat").onclick=()=>{$("catType").value="expense";$("catName").value="";$("catDialog").showModal()};
 $("catClose").onclick=()=>$("catDialog").close();
 $("catForm").onsubmit=e=>{
- e.preventDefault();
- const t=$("catType").value,n=$("catName").value.trim();
+ e.preventDefault();const t=$("catType").value,n=$("catName").value.trim();
  if(!n)return;
  if(db.cats[t].some(c=>c.toLowerCase()===n.toLowerCase())){alert("이미 있는 카테고리야.");return}
  db.cats[t].push(n);save();renderAll();$("catDialog").close();
@@ -519,14 +537,20 @@ $("importFile").onchange=async e=>{
  try{
   const d=JSON.parse(await file.text());
   if(!d||!Array.isArray(d.items)||!d.cats||!Array.isArray(d.cats.expense)||!Array.isArray(d.cats.income))throw Error();
-  if(!confirm("현재 기록을 백업 파일의 내용으로 교체할까?"))return;
-  db={items:d.items,cats:d.cats};save();renderAll();alert("백업을 불러왔어.");
+  if(!confirm("현재 데이터를 백업 파일의 데이터로 교체할까?"))return;
+  db={
+   items:d.items,
+   cats:d.cats,
+   initialBalance:Number.isFinite(Number(d.initialBalance))?Number(d.initialBalance):0
+  };
+  save();renderAll();$("initialBalance").value=db.initialBalance;alert("백업을 불러왔어.");
  }catch{alert("올바른 가계부 백업 파일이 아니야.")}
  finally{e.target.value=""}
 };
 
 function renderAll(){renderSelects();renderHome();renderHistory();renderCats()}
 $("date").value=today();
+$("initialBalance").value=db.initialBalance;
 renderAll();
 })();
 </script>
