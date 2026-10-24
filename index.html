@@ -3,839 +3,531 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#090909">
-<title>BLACK LEDGER — 가계부</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0a0a0a">
+<title>LEDGER / 가계부</title>
 <style>
 :root {
-  --bg:#090909;
-  --panel:#111111;
-  --panel2:#171717;
-  --line:#303030;
-  --text:#f1f1f1;
-  --muted:#858585;
-  --red:#ff4545;
-  --green:#40e08b;
-  --white:#fff;
+  --bg:#0a0a0a;--card:#141414;--line:#303030;
+  --white:#f5f5f5;--gray:#888;--red:#ff4545;--green:#42df8a;
 }
-* {box-sizing:border-box}
-body {
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Arial,"Noto Sans KR",sans-serif;
-  font-size:14px;
-  letter-spacing:-.3px;
-}
-button,input,select,textarea {font:inherit}
-button {cursor:pointer}
-button:focus-visible,input:focus-visible,select:focus-visible {
-  outline:2px solid white;
-  outline-offset:2px;
-}
-button:disabled {opacity:.3;cursor:not-allowed}
-button,input,select,textarea {
-  color:var(--text);
-}
-button {
-  border:1px solid var(--line);
-  background:var(--panel2);
-  padding:10px 13px;
-  border-radius:2px;
-}
-button:hover {border-color:#777}
-input,select,textarea {
-  width:100%;
-  min-width:0;
-  border:1px solid var(--line);
-  border-radius:2px;
-  background:#090909;
-  padding:11px;
-}
-input:focus,select:focus,textarea:focus {border-color:#aaa;outline:none}
-select option {background:#111}
-.wrap {max-width:1100px;margin:auto;padding:25px 20px 60px}
-header {
-  display:flex;align-items:center;justify-content:space-between;
-  border-bottom:2px solid var(--text);
-  padding-bottom:19px;gap:15px;
-}
-.logo {font-size:24px;font-weight:900;letter-spacing:2px}
-.logo span {color:var(--muted);font-size:10px;display:block;margin-top:5px;letter-spacing:3px}
-.live {font-size:10px;letter-spacing:2px;color:var(--green)}
-.live:before {content:"● ";font-size:9px}
-.section {margin-top:28px}
-.section-title {
-  font-size:11px;color:var(--muted);letter-spacing:2px;
-  margin-bottom:12px;font-weight:bold;
-}
-.monthbar {display:flex;align-items:center;justify-content:space-between;gap:10px}
-.month-label {font-size:23px;font-weight:800}
-.monthbar button {font-size:19px;padding:7px 15px}
-.summary {
-  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:10px;margin-top:15px;
-}
-.stat {
-  padding:18px 15px;background:var(--panel);
-  border:1px solid var(--line);min-width:0;
-  position:relative;
-}
-.stat:before {
-  content:"";position:absolute;top:-1px;left:-1px;width:28px;height:2px;
-  background:#aaa;
-}
-.stat.income:before {background:var(--green)}
-.stat.expense:before {background:var(--red)}
-.stat-label {font-size:11px;color:var(--muted);margin-bottom:13px}
-.stat-value {font-size:clamp(17px,3.1vw,27px);font-weight:800;overflow-wrap:anywhere}
-.income-text {color:var(--green)}
-.expense-text {color:var(--red)}
-.balance-text {color:var(--text)}
-.stat small {display:block;color:var(--muted);margin-top:8px;font-size:10px}
-.layout {display:grid;grid-template-columns:340px minmax(0,1fr);gap:18px;align-items:start}
-.panel {background:var(--panel);border:1px solid var(--line);padding:18px;min-width:0}
-.panel-heading {
-  font-size:16px;font-weight:800;display:flex;
-  justify-content:space-between;align-items:center;margin-bottom:18px;
-}
-.panel-heading small {font-size:10px;color:var(--muted);font-weight:normal}
-.type-switch {display:grid;grid-template-columns:1fr 1fr;margin-bottom:17px}
-.type-switch button {background:#0b0b0b;color:var(--muted);border-color:var(--line)}
-.type-switch button.active[data-type="expense"] {background:#351414;color:var(--red);border-color:var(--red)}
-.type-switch button.active[data-type="income"] {background:#102a1d;color:var(--green);border-color:var(--green)}
-.field {margin-bottom:14px}
-.field label {display:block;color:#aaa;font-size:11px;margin-bottom:7px}
-.amount-box {
-  display:flex;align-items:center;border:1px solid #555;background:#080808;
-  padding-left:12px;gap:7px;
-}
-.amount-box span {font-size:16px;color:var(--muted)}
-.amount-box input {border:0;font-size:25px;font-weight:bold;text-align:right;padding:14px 10px;background:transparent}
-.amount-box input:focus {outline:none}
-.calc {
-  display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px;
-}
-.calc button {padding:11px 3px;font-size:15px;background:#202020}
-.calc button.operator {color:#ddd;background:#292929}
-.calc button.equals {background:#f0f0f0;color:#111;font-weight:bold}
-.calc button.clear {color:var(--red)}
-.calc button.shipping {grid-column:span 2;color:var(--green);font-size:12px}
-.calc button.zero {grid-column:span 2}
-.calc-hint {font-size:10px;color:var(--muted);margin-top:8px;min-height:14px}
-.primary {
-  width:100%;font-weight:bold;background:#f0f0f0;color:#090909;
-  border-color:#f0f0f0;padding:14px;margin-top:5px;
-}
-.primary:hover {background:#ccc}
-.secondary {font-size:11px;padding:6px 8px}
-.category-manage {
-  border-top:1px solid var(--line);margin-top:17px;padding-top:14px;
-}
-.cat-heading {display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.cat-heading span {font-size:11px;color:var(--muted)}
-.cat-heading button {padding:4px 9px}
-.cat-list {display:flex;flex-wrap:wrap;gap:6px}
-.cat-chip {display:flex;align-items:center;gap:6px;border:1px solid var(--line);padding:5px 7px;font-size:11px;color:#ccc}
-.cat-chip button {padding:0;border:0;background:none;color:#888;font-size:13px}
-.filters {display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
-.filters input {grid-column:1/-1}
-.filter-row {display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.filter-row button {font-size:11px;padding:7px 9px;color:#aaa}
-.filter-row button.active {color:white;border-color:#aaa}
-.list-top {display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;gap:10px}
-.list-top strong {font-size:14px}
-.list-top span {font-size:11px;color:var(--muted)}
-.transaction-list {display:flex;flex-direction:column;gap:7px}
-.transaction {
-  display:grid;grid-template-columns: minmax(0,1fr) auto;
-  gap:10px;padding:13px 11px;background:#0b0b0b;border:1px solid #242424;
-}
-.transaction:hover {border-color:#555}
-.tx-title {font-size:13px;font-weight:bold;overflow-wrap:anywhere}
-.tx-meta {display:flex;gap:7px;flex-wrap:wrap;margin-top:7px;color:var(--muted);font-size:10px}
-.tx-cat {border:1px solid #363636;padding:2px 5px}
-.tx-right {text-align:right;min-width:90px}
-.tx-amount {font-weight:800;font-size:15px;overflow-wrap:anywhere}
-.tx-actions {display:flex;justify-content:flex-end;gap:4px;margin-top:8px}
-.tx-actions button {padding:4px 7px;font-size:10px;color:#aaa}
-.empty {padding:40px 10px;text-align:center;color:var(--muted);border:1px dashed #333;line-height:2}
-.empty b {display:block;font-size:13px;color:#ddd}
-.footer {margin-top:35px;padding-top:15px;border-top:1px solid var(--line);font-size:10px;color:#666;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-dialog {
-  background:#111;color:var(--text);border:1px solid #555;
-  width:min(380px,calc(100% - 30px));padding:20px;
-}
-dialog::backdrop {background:#000b}
-.dialog-actions {display:flex;gap:7px;margin-top:17px}
-.dialog-actions button {flex:1}
-.danger {color:var(--red)}
-.toast {
-  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  background:#eee;color:#111;padding:12px 18px;z-index:5;
-  font-size:12px;max-width:90%;text-align:center;
-}
-.hidden {display:none!important}
-@media(max-width:760px) {
-  .wrap {padding:19px 12px 40px}
-  .layout {grid-template-columns:1fr}
-  .summary {gap:6px}
-  .stat {padding:13px 9px}
-  .stat-label {font-size:10px}
-  .month-label {font-size:20px}
-  .panel {padding:14px}
-}
-@media(max-width:370px) {
-  .summary {grid-template-columns:1fr}
-  .stat {padding:13px}
-  .stat-label {margin-bottom:7px}
-  .filters {grid-template-columns:1fr}
-  .filters input {grid-column:auto}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--white);
+font-family:Arial,"Noto Sans KR",sans-serif;font-size:14px}
+button,input,select{font:inherit}
+button{cursor:pointer;color:inherit;background:#191919;border:1px solid var(--line);border-radius:2px;padding:11px}
+input,select{width:100%;padding:12px;background:#090909;color:white;border:1px solid var(--line);border-radius:2px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid white}
+button:hover{border-color:#777}
+header{padding:23px 20px;border-bottom:1px solid var(--line)}
+.brand{font-size:22px;font-weight:900;letter-spacing:3px}
+.brand small{display:block;font-size:9px;color:var(--gray);letter-spacing:2px;margin-top:6px}
+.shell{max-width:850px;margin:auto;padding:22px 18px 100px}
+.page{display:none}
+.page.active{display:block}
+.heading{font-size:19px;font-weight:800;margin:0 0 6px}
+.sub{font-size:11px;color:var(--gray);margin-bottom:22px}
+.nav{display:flex;gap:5px;max-width:850px;margin:auto;padding:12px 18px 0}
+.nav button{flex:1;font-size:12px;color:#888;padding:13px 5px}
+.nav button.active{background:#eee;color:#111;border-color:#eee;font-weight:bold}
+.box{border:1px solid var(--line);background:var(--card);padding:17px;margin-bottom:12px}
+.label{font-size:11px;color:var(--gray);margin-bottom:10px}
+.month{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.month strong{font-size:20px}
+.month button{padding:7px 14px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.stat{padding:16px 12px;border:1px solid var(--line);background:var(--card);min-width:0}
+.stat:last-child{grid-column:1/-1}
+.value{font-size:clamp(19px,4vw,25px);font-weight:800;overflow-wrap:anywhere}
+.green{color:var(--green)}.red{color:var(--red)}
+.stat .label{margin-bottom:12px}
+.quick{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
+.quick button{padding:16px;font-weight:bold}
+.quick .out{color:var(--red);border-color:#552222}
+.quick .in{color:var(--green);border-color:#214c34}
+.row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.row strong{font-size:14px}
+.small-btn{padding:7px 10px;font-size:11px}
+.entry{display:flex;justify-content:space-between;gap:12px;padding:14px 0;border-bottom:1px solid #282828}
+.entry:last-child{border-bottom:0}
+.entry-title{font-weight:bold;overflow-wrap:anywhere}
+.meta{font-size:10px;color:var(--gray);margin-top:7px}
+.amount{font-weight:bold;text-align:right;overflow-wrap:anywhere}
+.entry-buttons{display:flex;gap:5px;margin-top:8px;justify-content:flex-end}
+.entry-buttons button{padding:5px 8px;font-size:10px;color:#aaa}
+.field{margin-bottom:16px}
+.field label{display:block;color:#aaa;font-size:11px;margin-bottom:8px}
+.switch{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
+.switch button{color:#888}
+.switch button.active.expense{color:var(--red);border-color:var(--red);background:#291313}
+.switch button.active.income{color:var(--green);border-color:var(--green);background:#11251a}
+.amount-input{font-size:25px;font-weight:bold;text-align:right}
+.calc{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+.calc button{padding:12px 3px}
+.calc .op{background:#252525}
+.calc .equals{background:#eee;color:#111}
+.calc .ship{grid-column:span 2;color:var(--green)}
+.calc .zero{grid-column:span 2}
+.hint{font-size:10px;color:var(--gray);min-height:16px;margin-top:8px}
+.primary{width:100%;background:#eee;color:#111;border-color:#eee;font-weight:bold;padding:14px}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.filters input{grid-column:1/-1}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin:12px 0}
+.pills button{font-size:11px;padding:8px 10px;color:#aaa}
+.pills button.active{border-color:#eee;color:white}
+.catgroup{margin-bottom:24px}
+.catgroup h3{font-size:12px;color:#aaa;margin-bottom:12px}
+.cat{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #292929;padding:12px 0}
+.cat button{padding:5px 9px;color:var(--red)}
+.empty{padding:28px 10px;text-align:center;color:#777;font-size:12px;border:1px dashed #333;line-height:2}
+.notice{font-size:10px;color:#777;line-height:1.8;margin-top:20px}
+dialog{background:#141414;color:white;border:1px solid #555;width:calc(100% - 30px);max-width:360px}
+dialog::backdrop{background:#000b}
+.dialog-actions{display:flex;gap:8px;margin-top:15px}
+.dialog-actions button{flex:1}
+@media(min-width:650px){
+ .shell{padding-top:28px}
+ .stats{grid-template-columns:repeat(3,1fr)}
+ .stat:last-child{grid-column:auto}
+ .home-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+ .home-grid .box{margin-bottom:0}
 }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <div class="logo">BLACK LEDGER<span>PERSONAL FINANCE SYSTEM / 001</span></div>
-    <div class="live">SYSTEM ONLINE</div>
-  </header>
+<header>
+  <div class="brand">LEDGER<small>PERSONAL FINANCE / 001</small></div>
+</header>
 
-  <section class="section">
-    <div class="section-title">01 / OVERVIEW</div>
-    <div class="monthbar">
-      <button id="prevMonth" aria-label="이전 달">←</button>
-      <div class="month-label" id="monthLabel"></div>
-      <button id="nextMonth" aria-label="다음 달">→</button>
-    </div>
-    <div class="summary">
-      <div class="stat income">
-        <div class="stat-label">TOTAL INCOME / 총수입</div>
-        <div class="stat-value income-text" id="totalIncome">0원</div>
-        <small>이번 달 수입 합계</small>
-      </div>
-      <div class="stat expense">
-        <div class="stat-label">TOTAL EXPENSE / 총지출</div>
-        <div class="stat-value expense-text" id="totalExpense">0원</div>
-        <small>이번 달 지출 합계</small>
-      </div>
-      <div class="stat">
-        <div class="stat-label">BALANCE / 남은 금액</div>
-        <div class="stat-value balance-text" id="balance">0원</div>
-        <small>수입 - 지출</small>
-      </div>
-    </div>
-  </section>
+<nav class="nav">
+  <button class="active" data-page="home">01 홈</button>
+  <button data-page="add">02 거래 추가</button>
+  <button data-page="history">03 내역</button>
+  <button data-page="settings">04 설정</button>
+</nav>
 
-  <div class="layout section">
-    <section class="panel">
-      <div class="panel-heading" id="formHeading">NEW TRANSACTION <small>입력 / 등록</small></div>
-      <form id="transactionForm">
-        <div class="type-switch">
-          <button type="button" data-type="expense" class="active">− 지출</button>
-          <button type="button" data-type="income">＋ 수입</button>
-        </div>
+<main class="shell">
 
-        <div class="field">
-          <label for="amount">금액 / AMOUNT</label>
-          <div class="amount-box">
-            <span>₩</span>
-            <input id="amount" type="text" inputmode="decimal" placeholder="0" autocomplete="off" required>
-          </div>
-          <div class="calc">
-            <button type="button" data-key="7">7</button>
-            <button type="button" data-key="8">8</button>
-            <button type="button" data-key="9">9</button>
-            <button type="button" class="operator" data-key="÷">÷</button>
-            <button type="button" data-key="4">4</button>
-            <button type="button" data-key="5">5</button>
-            <button type="button" data-key="6">6</button>
-            <button type="button" class="operator" data-key="×">×</button>
-            <button type="button" data-key="1">1</button>
-            <button type="button" data-key="2">2</button>
-            <button type="button" data-key="3">3</button>
-            <button type="button" class="operator" data-key="−">−</button>
-            <button type="button" class="zero" data-key="0">0</button>
-            <button type="button" data-key=".">.</button>
-            <button type="button" class="operator" data-key="+">+</button>
-            <button type="button" data-key="(">(</button>
-            <button type="button" data-key=")">)</button>
-            <button type="button" class="clear" data-key="back">⌫</button>
-            <button type="button" class="clear" data-key="clear">AC</button>
-            <button type="button" class="equals" data-key="=">=</button>
-            <button type="button" class="shipping" id="shippingBtn">− 배송비 1,800원</button>
-            <button type="button" data-key="ans">ANS</button>
-          </div>
-          <div class="calc-hint" id="calcHint">계산식을 입력하거나 숫자 버튼을 눌러.</div>
-        </div>
-
-        <div class="field">
-          <label for="category">카테고리 / CATEGORY</label>
-          <select id="category" required></select>
-        </div>
-        <div class="field">
-          <label for="date">날짜 / DATE</label>
-          <input id="date" type="date" required>
-        </div>
-        <div class="field">
-          <label for="memo">메모 / DESCRIPTION</label>
-          <input id="memo" type="text" maxlength="100" placeholder="무엇을 사고 / 벌었나요?">
-        </div>
-        <button class="primary" id="submitBtn" type="submit">+ 거래 내역 추가</button>
-        <button type="button" id="cancelEdit" class="secondary hidden" style="width:100%;margin-top:7px">수정 취소</button>
-      </form>
-
-      <div class="category-manage">
-        <div class="cat-heading">
-          <span>CATEGORY MANAGER / 카테고리 관리</span>
-          <button type="button" id="addCategory">+ 추가</button>
-        </div>
-        <div class="cat-list" id="categoryList"></div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-heading">TRANSACTION LOG <small>거래 기록</small></div>
-      <div class="filters">
-        <input id="search" type="search" placeholder="⌕  메모 / 카테고리 검색">
-        <select id="filterType">
-          <option value="all">전체 거래</option>
-          <option value="income">수입만</option>
-          <option value="expense">지출만</option>
-        </select>
-        <select id="filterCategory">
-          <option value="all">모든 카테고리</option>
-        </select>
-      </div>
-      <div class="filter-row">
-        <button type="button" class="active" data-period="month">이번 달</button>
-        <button type="button" data-period="all">전체 기간</button>
-      </div>
-      <div class="list-top">
-        <strong id="recordCount">0 RECORDS</strong>
-        <span id="filteredTotal">합계 0원</span>
-      </div>
-      <div id="transactionList" class="transaction-list"></div>
-    </section>
+<!-- HOME -->
+<section class="page active" id="home">
+  <h1 class="heading">OVERVIEW</h1>
+  <div class="sub">이번 달의 자금 현황</div>
+  <div class="month">
+    <button id="prev">←</button>
+    <strong id="month"></strong>
+    <button id="next">→</button>
   </div>
-
-  <div class="footer">
-    <span>BLACK LEDGER / PERSONAL USE ONLY</span>
-    <span>DATA SAVED LOCALLY ON THIS DEVICE</span>
+  <div class="stats">
+    <div class="stat">
+      <div class="label">총수입 / INCOME</div>
+      <div class="value green" id="incomeSum">0원</div>
+    </div>
+    <div class="stat">
+      <div class="label">총지출 / EXPENSE</div>
+      <div class="value red" id="expenseSum">0원</div>
+    </div>
+    <div class="stat">
+      <div class="label">남은 금액 / BALANCE</div>
+      <div class="value" id="balance">0원</div>
+    </div>
   </div>
-</div>
+  <div class="quick">
+    <button class="out" onclick="openAdd('expense')">− 지출 추가</button>
+    <button class="in" onclick="openAdd('income')">＋ 수입 추가</button>
+  </div>
+  <div class="box">
+    <div class="row"><strong>최근 거래</strong><button class="small-btn" onclick="showPage('history')">전체 보기 →</button></div>
+    <div id="recent" style="margin-top:8px"></div>
+  </div>
+</section>
 
-<dialog id="categoryDialog">
-  <form id="categoryForm">
-    <div class="panel-heading">NEW CATEGORY <small>카테고리 추가</small></div>
-    <div class="field">
-      <label for="newCategoryType">종류</label>
-      <select id="newCategoryType">
-        <option value="expense">지출</option>
-        <option value="income">수입</option>
-      </select>
+<!-- ADD -->
+<section class="page" id="add">
+  <h1 class="heading" id="addHeading">NEW TRANSACTION</h1>
+  <div class="sub">거래 정보를 입력해 줘.</div>
+  <form id="form">
+    <div class="switch">
+      <button type="button" class="active expense" data-type="expense">− 지출</button>
+      <button type="button" data-type="income">＋ 수입</button>
     </div>
     <div class="field">
-      <label for="newCategoryName">카테고리 이름</label>
-      <input id="newCategoryName" maxlength="25" placeholder="예: 문구, 용돈" required>
+      <label>금액 / AMOUNT</label>
+      <input id="amount" class="amount-input" inputmode="decimal" placeholder="0" required>
+      <div class="calc">
+        <button type="button" data-key="7">7</button>
+        <button type="button" data-key="8">8</button>
+        <button type="button" data-key="9">9</button>
+        <button type="button" class="op" data-key="÷">÷</button>
+        <button type="button" data-key="4">4</button>
+        <button type="button" data-key="5">5</button>
+        <button type="button" data-key="6">6</button>
+        <button type="button" class="op" data-key="×">×</button>
+        <button type="button" data-key="1">1</button>
+        <button type="button" data-key="2">2</button>
+        <button type="button" data-key="3">3</button>
+        <button type="button" class="op" data-key="−">−</button>
+        <button type="button" class="zero" data-key="0">0</button>
+        <button type="button" data-key=".">.</button>
+        <button type="button" class="op" data-key="+">+</button>
+        <button type="button" data-key="(">(</button>
+        <button type="button" data-key=")">)</button>
+        <button type="button" data-key="back">⌫</button>
+        <button type="button" data-key="clear">AC</button>
+        <button type="button" class="equals" data-key="=">=</button>
+        <button type="button" class="ship" id="shipping">− 배송비 1,800원</button>
+        <button type="button" data-key="ans">ANS</button>
+      </div>
+      <div class="hint" id="hint">계산한 뒤 = 버튼을 눌러도 돼.</div>
     </div>
+    <div class="field">
+      <label>카테고리</label>
+      <select id="category" required></select>
+    </div>
+    <div class="field">
+      <label>날짜</label>
+      <input type="date" id="date" required>
+    </div>
+    <div class="field">
+      <label>메모</label>
+      <input id="memo" maxlength="100" placeholder="예: 아크릴 키링 구매">
+    </div>
+    <button class="primary" id="saveBtn">거래 내역 저장</button>
+    <button type="button" id="cancelEdit" style="width:100%;margin-top:8px;display:none">수정 취소</button>
+  </form>
+</section>
+
+<!-- HISTORY -->
+<section class="page" id="history">
+  <h1 class="heading">HISTORY</h1>
+  <div class="sub">저장된 거래 내역</div>
+  <div class="filters">
+    <input id="search" placeholder="메모 또는 카테고리 검색">
+    <select id="filterType">
+      <option value="all">전체 종류</option>
+      <option value="income">수입</option>
+      <option value="expense">지출</option>
+    </select>
+    <select id="filterMonth"><option value="all">전체 기간</option></select>
+    <select id="filterCat"><option value="all">전체 카테고리</option></select>
+  </div>
+  <div class="row"><strong id="count">0건</strong><span id="historySum" style="font-size:11px;color:#999"></span></div>
+  <div id="historyList" style="margin-top:8px"></div>
+</section>
+
+<!-- SETTINGS -->
+<section class="page" id="settings">
+  <h1 class="heading">SETTINGS</h1>
+  <div class="sub">카테고리 관리</div>
+  <div class="box">
+    <div class="row">
+      <strong>카테고리</strong>
+      <button class="small-btn" id="addCat">＋ 추가</button>
+    </div>
+    <div id="categories" style="margin-top:15px"></div>
+  </div>
+  <div class="box">
+    <strong>데이터 관리</strong>
+    <p class="notice">기록은 현재 브라우저에 저장돼. 기기를 바꾸거나 브라우저 데이터를 삭제하면 기록이 사라질 수 있으니 정기적으로 백업해 줘.</p>
+    <button id="export" style="width:100%;margin-top:10px">거래 내역 백업 (.json)</button>
+    <label for="importFile" style="display:block;margin-top:10px;border:1px solid #333;padding:12px;text-align:center;cursor:pointer">백업 파일 불러오기</label>
+    <input type="file" id="importFile" accept=".json,application/json" style="display:none">
+  </div>
+</section>
+
+</main>
+
+<dialog id="catDialog">
+  <form id="catForm">
+    <h3>카테고리 추가</h3>
+    <div class="field"><label>종류</label>
+      <select id="catType"><option value="expense">지출</option><option value="income">수입</option></select>
+    </div>
+    <div class="field"><label>이름</label><input id="catName" maxlength="25" required placeholder="예: 문구"></div>
     <div class="dialog-actions">
-      <button type="button" id="closeCategory">취소</button>
-      <button class="primary" type="submit" style="margin:0">추가하기</button>
+      <button type="button" id="catClose">취소</button>
+      <button type="submit">추가</button>
     </div>
   </form>
 </dialog>
 
-<dialog id="confirmDialog">
-  <div class="panel-heading">CONFIRM <small>확인</small></div>
-  <p id="confirmText" style="line-height:1.8;color:#ccc"></p>
-  <div class="dialog-actions">
-    <button type="button" id="confirmCancel">취소</button>
-    <button type="button" id="confirmOK" class="danger">삭제하기</button>
-  </div>
-</dialog>
-
-<div id="toast" class="toast hidden" role="status"></div>
-
 <script>
 (() => {
-  "use strict";
+"use strict";
+const $ = id => document.getElementById(id);
+const KEY = "ledger-simple-v2";
+const defaults = {expense:["굿즈","기타"],income:["커미션","중고거래"]};
+let db = load();
+let type = "expense";
+let expr = "";
+let ans = 0;
+let editId = null;
+let month = new Date();
+month = new Date(month.getFullYear(),month.getMonth(),1);
 
-  const $ = id => document.getElementById(id);
-  const STORAGE_KEY = "black-ledger-v1";
-  const DEFAULT_CATEGORIES = {
-    expense: ["굿즈", "기타"],
-    income: ["커미션", "중고거래"]
+function load(){
+ try{
+  const d = JSON.parse(localStorage.getItem(KEY));
+  if(!d) return {items:[],cats:structuredClone(defaults)};
+  return {
+   items:Array.isArray(d.items)?d.items:[],
+   cats:{
+    expense:Array.isArray(d.cats?.expense)?d.cats.expense:[...defaults.expense],
+    income:Array.isArray(d.cats?.income)?d.cats.income:[...defaults.income]
+   }
   };
+ }catch{return {items:[],cats:structuredClone(defaults)}}
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db))}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function won(n){return Math.round(n).toLocaleString("ko-KR")+"원"}
+function ym(s){return s.slice(0,7)}
+function today(){
+ const d=new Date();
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function showPage(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll("[data-page]").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ if(id==="history")renderHistory();
+ if(id==="home")renderHome();
+ if(id==="settings")renderCats();
+ window.scrollTo(0,0);
+}
+window.showPage=showPage;
+document.querySelectorAll("[data-page]").forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+window.openAdd = t => {
+ if(!editId) resetForm();
+ setType(t);
+ showPage("add");
+};
 
-  let data = loadData();
-  let type = "expense";
-  let editingId = null;
-  let period = "month";
-  let expression = "";
-  let lastAnswer = 0;
-  let toastTimer;
-  let pendingConfirm = null;
-  let currentMonth = new Date();
-  currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1);
+function setType(t){
+ type=t;
+ document.querySelectorAll("[data-type]").forEach(b=>{
+  b.classList.toggle("active",b.dataset.type===t);
+  b.classList.toggle(t,b.dataset.type===t);
+ });
+ renderSelects();
+}
+document.querySelectorAll("[data-type]").forEach(b=>b.onclick=()=>setType(b.dataset.type));
 
-  function loadData() {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return { transactions: [], categories: structuredClone(DEFAULT_CATEGORIES) };
-      const parsed = JSON.parse(raw);
-      const categories = parsed.categories || {};
-      return {
-        transactions: Array.isArray(parsed.transactions) ? parsed.transactions : [],
-        categories: {
-          expense: Array.isArray(categories.expense) ? categories.expense : [...DEFAULT_CATEGORIES.expense],
-          income: Array.isArray(categories.income) ? categories.income : [...DEFAULT_CATEGORIES.income]
-        }
-      };
-    } catch {
-      return { transactions: [], categories: structuredClone(DEFAULT_CATEGORIES) };
-    }
+function renderSelects(){
+ const list=db.cats[type];
+ $("category").innerHTML=list.length?list.map(c=>`<option>${esc(c)}</option>`).join(""):'<option value="">설정에서 카테고리를 추가해 줘</option>';
+ const old=$("filterCat").value;
+ const all=[...new Set([...db.cats.expense,...db.cats.income])];
+ $("filterCat").innerHTML='<option value="all">전체 카테고리</option>'+all.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+ if(all.includes(old))$("filterCat").value=old;
+ const selected=$("filterMonth").value;
+ const months=[...new Set(db.items.map(t=>ym(t.date)))].sort().reverse();
+ $("filterMonth").innerHTML='<option value="all">전체 기간</option>'+months.map(m=>`<option value="${m}">${m}</option>`).join("");
+ if(months.includes(selected))$("filterMonth").value=selected;
+}
+
+function evaluate(src){
+ const s=src.replace(/\s/g,"").replace(/×/g,"*").replace(/÷/g,"/").replace(/−/g,"-");
+ if(!s||s.length>100||!/^[\d.+\-*/()]+$/.test(s))throw Error("계산식을 확인해 줘.");
+ const tok=s.match(/\d*\.?\d+|[()+\-*/]/g);
+ if(!tok||tok.join("")!==s)throw Error("계산식을 확인해 줘.");
+ let i=0;
+ function atom(){
+  if(tok[i]==="+"){i++;return atom()}
+  if(tok[i]==="-"){i++;return -atom()}
+  if(tok[i]==="("){i++;let n=sum();if(tok[i++]!==")")throw Error("괄호를 확인해 줘.");return n}
+  const x=tok[i++];
+  if(!x||! /^\d*\.?\d+$/.test(x))throw Error("숫자를 확인해 줘.");
+  return Number(x);
+ }
+ function mul(){
+  let n=atom();
+  while(tok[i]==="*"||tok[i]==="/"){
+   const op=tok[i++],v=atom();
+   if(op==="/"&&v===0)throw Error("0으로 나눌 수 없어.");
+   n=op==="*"?n*v:n/v;
   }
-
-  function saveData() {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-    } catch {
-      notify("저장에 실패했어. 브라우저 저장 공간을 확인해 줘.");
-    }
+  return n;
+ }
+ function sum(){
+  let n=mul();
+  while(tok[i]==="+"||tok[i]==="-"){
+   const op=tok[i++],v=mul();
+   n=op==="+"?n+v:n-v;
   }
+  return n;
+ }
+ const n=sum();
+ if(i!==tok.length||!Number.isFinite(n))throw Error("계산식을 확인해 줨.");
+ return n;
+}
+function displayExpr(){ $("amount").value=expr; }
+function key(k){
+ if(k==="clear")expr="";
+ else if(k==="back")expr=expr.slice(0,-1);
+ else if(k==="ans")expr+=String(ans);
+ else if(k==="="){
+  try{ans=evaluate(expr);expr=String(Math.round(ans*100)/100);$("hint").textContent="계산 완료";}
+  catch(e){$("hint").textContent=e.message;return}
+ }else expr+=k;
+ displayExpr();
+}
+document.querySelectorAll("[data-key]").forEach(b=>b.onclick=()=>key(b.dataset.key));
+$("amount").addEventListener("input",e=>{
+ expr=e.target.value.replace(/[^0-9.+\-*/()×÷−]/g,"");
+ if(expr!==e.target.value)displayExpr();
+});
+$("shipping").onclick=()=>{
+ try{
+  const n=expr?evaluate(expr):0;
+  ans=Math.round((n-1800)*100)/100;
+  expr=String(ans);displayExpr();
+  $("hint").textContent="1,800원 차감 완료";
+ }catch(e){$("hint").textContent=e.message}
+};
 
-  function money(n) {
-    return Math.round(n).toLocaleString("ko-KR") + "원";
-  }
+function resetForm(){
+ editId=null;expr="";
+ $("form").reset();
+ $("date").value=today();
+ $("hint").textContent="계산한 뒤 = 버튼을 눌러도 돼.";
+ $("addHeading").textContent="NEW TRANSACTION";
+ $("saveBtn").textContent="거래 내역 저장";
+ $("cancelEdit").style.display="none";
+ setType("expense");
+ $("amount").value="";
+}
+$("cancelEdit").onclick=()=>resetForm();
 
-  function todayString() {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  }
+$("form").onsubmit=e=>{
+ e.preventDefault();
+ let amount;
+ try{amount=evaluate(expr)}catch(err){$("hint").textContent=err.message;return}
+ if(amount<=0||!Number.isFinite(amount)){alert("금액은 0원보다 커야 해.");return}
+ if(amount>1e15){alert("금액이 너무 커.");return}
+ const date=$("date").value;
+ if(!date){alert("날짜를 입력해 줘.");return}
+ const item={
+  id:editId||`${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  type,amount:Math.round(amount*100)/100,
+  category:$("category").value,date,
+  memo:$("memo").value.trim(),createdAt:Date.now()
+ };
+ if(!item.category){alert("카테고리를 먼저 추가해 줘.");return}
+ if(editId){
+  const i=db.items.findIndex(x=>x.id===editId);
+  if(i>=0){item.createdAt=db.items[i].createdAt;db.items[i]=item}
+ }else db.items.push(item);
+ save();resetForm();renderAll();showPage("home");
+};
 
-  function monthString(d) {
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`;
-  }
+function renderHome(){
+ $("month").textContent=`${month.getFullYear()}.${String(month.getMonth()+1).padStart(2,"0")}`;
+ const items=db.items.filter(t=>ym(t.date)===`${month.getFullYear()}-${String(month.getMonth()+1).padStart(2,"0")}`);
+ const inc=items.filter(t=>t.type==="income").reduce((s,t)=>s+t.amount,0);
+ const out=items.filter(t=>t.type==="expense").reduce((s,t)=>s+t.amount,0);
+ $("incomeSum").textContent=won(inc);
+ $("expenseSum").textContent=won(out);
+ $("balance").textContent=won(inc-out);
+ $("balance").style.color=inc-out<0?"var(--red)":"var(--white)";
+ const recent=[...items].sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0)).slice(0,5);
+ $("recent").innerHTML=recent.length?recent.map(t=>entryHTML(t,false)).join(""):'<div class="empty">아직 거래 내역이 없어.<br>첫 거래를 추가해 봐.</div>';
+}
+$("prev").onclick=()=>{month.setMonth(month.getMonth()-1);renderHome()};
+$("next").onclick=()=>{month.setMonth(month.getMonth()+1);renderHome()};
 
-  function notify(message) {
-    $("toast").textContent = message;
-    $("toast").classList.remove("hidden");
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => $("toast").classList.add("hidden"), 2300);
-  }
+function entryHTML(t,actions=true){
+ return `<div class="entry">
+  <div style="min-width:0">
+   <div class="entry-title">${esc(t.memo||t.category)}</div>
+   <div class="meta">${esc(t.date)} · ${esc(t.category)}</div>
+  </div>
+  <div>
+   <div class="amount ${t.type==="income"?"green":"red"}">${t.type==="income"?"+":"−"}${won(t.amount)}</div>
+   ${actions?`<div class="entry-buttons"><button data-edit="${esc(t.id)}">수정</button><button data-del="${esc(t.id)}">삭제</button></div>`:""}
+  </div>
+ </div>`;
+}
+function renderHistory(){
+ renderSelects();
+ const q=$("search").value.trim().toLowerCase();
+ const ft=$("filterType").value,fc=$("filterCat").value,fm=$("filterMonth").value;
+ const list=[...db.items].filter(t=>
+  (ft==="all"||t.type===ft)&&
+  (fc==="all"||t.category===fc)&&
+  (fm==="all"||ym(t.date)===fm)&&
+  (!q||`${t.memo} ${t.category} ${t.date}`.toLowerCase().includes(q))
+ ).sort((a,b)=>b.date.localeCompare(a.date)||(b.createdAt||0)-(a.createdAt||0));
+ const net=list.reduce((s,t)=>s+(t.type==="income"?t.amount:-t.amount),0);
+ $("count").textContent=`${list.length}건`;
+ $("historySum").textContent=`순합계 ${won(net)}`;
+ $("historyList").innerHTML=list.length?list.map(t=>entryHTML(t,true)).join(""):'<div class="empty">기록이 없어.</div>';
+}
+["search","filterType","filterCat","filterMonth"].forEach(id=>{
+ $(id).addEventListener(id==="search"?"input":"change",renderHistory);
+});
+document.addEventListener("click",e=>{
+ const edit=e.target.closest("[data-edit]");
+ const del=e.target.closest("[data-del]");
+ if(edit){
+  const t=db.items.find(x=>x.id===edit.dataset.edit);if(!t)return;
+  editId=t.id;expr=String(t.amount);setType(t.type);
+  $("category").value=t.category;$("date").value=t.date;
+  $("memo").value=t.memo||"";displayExpr();
+  $("addHeading").textContent="EDIT TRANSACTION";
+  $("saveBtn").textContent="변경 사항 저장";
+  $("cancelEdit").style.display="block";
+  showPage("add");
+ }
+ if(del){
+  if(!confirm("이 거래 내역을 삭제할까?"))return;
+  db.items=db.items.filter(t=>t.id!==del.dataset.del);
+  save();renderAll();
+ }
+});
 
-  function escapeHTML(s) {
-    return String(s).replace(/[&<>"']/g, ch => ({
-      "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
-    })[ch]);
-  }
+function renderCats(){
+ $("categories").innerHTML=["expense","income"].map(t=>`
+ <div class="catgroup"><h3>${t==="expense"?"− 지출 카테고리":"＋ 수입 카테고리"}</h3>
+ ${db.cats[t].map(c=>`<div class="cat"><span>${esc(c)}</span><button data-catdel="${esc(c)}" data-cattype="${t}">삭제</button></div>`).join("")||'<div class="meta">카테고리가 없어.</div>'}
+ </div>`).join("");
+}
+$("addCat").onclick=()=>{
+ $("catType").value="expense";$("catName").value="";$("catDialog").showModal();
+};
+$("catClose").onclick=()=>$("catDialog").close();
+$("catForm").onsubmit=e=>{
+ e.preventDefault();
+ const t=$("catType").value,n=$("catName").value.trim();
+ if(!n)return;
+ if(db.cats[t].some(c=>c.toLowerCase()===n.toLowerCase())){alert("이미 있는 카테고리야.");return}
+ db.cats[t].push(n);save();renderAll();$("catDialog").close();
+};
+$("categories").onclick=e=>{
+ const b=e.target.closest("[data-catdel]");if(!b)return;
+ const c=b.dataset.catdel,t=b.dataset.cattype;
+ if(db.items.some(x=>x.type===t&&x.category===c)){alert("거래 내역에서 사용 중인 카테고리는 삭제할 수 없어.");return}
+ if(!confirm(`'${c}' 카테고리를 삭제할까?`))return;
+ db.cats[t]=db.cats[t].filter(x=>x!==c);save();renderAll();
+};
 
-  function renderCategories() {
-    const cats = data.categories[type] || [];
-    const previous = $("category").value;
-    $("category").innerHTML = cats.length
-      ? cats.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("")
-      : '<option value="">카테고리를 먼저 추가해 줘</option>';
+$("export").onclick=()=>{
+ const blob=new Blob([JSON.stringify(db,null,2)],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="ledger-backup.json";a.click();URL.revokeObjectURL(url);
+};
+$("importFile").onchange=async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{
+  const d=JSON.parse(await file.text());
+  if(!d||!Array.isArray(d.items)||!d.cats||!Array.isArray(d.cats.expense)||!Array.isArray(d.cats.income))throw Error();
+  if(!confirm("현재 기록을 백업 파일의 내용으로 교체할까?"))return;
+  db={items:d.items,cats:d.cats};save();renderAll();alert("백업을 불러왔어.");
+ }catch{alert("올바른 가계부 백업 파일이 아니야.")}
+ finally{e.target.value=""}
+};
 
-    if (cats.includes(previous)) $("category").value = previous;
-
-    $("categoryList").innerHTML = Object.entries(data.categories).map(([t, list]) =>
-      list.map(c => `
-        <span class="cat-chip">
-          <span>${t === "income" ? "＋" : "−"} ${escapeHTML(c)}</span>
-          <button type="button" data-delete-cat="${escapeHTML(c)}" data-cat-type="${t}" aria-label="${escapeHTML(c)} 삭제">×</button>
-        </span>
-      `).join("")
-    ).join("");
-
-    const all = [...new Set([...data.categories.expense, ...data.categories.income])];
-    const old = $("filterCategory").value;
-    $("filterCategory").innerHTML = '<option value="all">모든 카테고리</option>' +
-      all.map(c => `<option value="${escapeHTML(c)}">${escapeHTML(c)}</option>`).join("");
-    if (all.includes(old)) $("filterCategory").value = old;
-  }
-
-  function getMonthTransactions() {
-    return data.transactions.filter(t => t.date && t.date.startsWith(monthString(currentMonth)));
-  }
-
-  function renderSummary() {
-    $("monthLabel").textContent =
-      `${currentMonth.getFullYear()}.${String(currentMonth.getMonth()+1).padStart(2,"0")}`;
-
-    const txs = getMonthTransactions();
-    const income = txs.filter(t => t.type === "income").reduce((s,t) => s + t.amount, 0);
-    const expense = txs.filter(t => t.type === "expense").reduce((s,t) => s + t.amount, 0);
-    const balance = income - expense;
-
-    $("totalIncome").textContent = money(income);
-    $("totalExpense").textContent = money(expense);
-    $("balance").textContent = money(balance);
-    $("balance").style.color = balance < 0 ? "var(--red)" : "var(--text)";
-  }
-
-  function renderTransactions() {
-    const query = $("search").value.trim().toLowerCase();
-    const ft = $("filterType").value;
-    const fc = $("filterCategory").value;
-
-    let txs = data.transactions.filter(t => {
-      if (period === "month" && !t.date.startsWith(monthString(currentMonth))) return false;
-      if (ft !== "all" && t.type !== ft) return false;
-      if (fc !== "all" && t.category !== fc) return false;
-      if (query && !`${t.memo} ${t.category} ${t.date}`.toLowerCase().includes(query)) return false;
-      return true;
-    });
-
-    txs.sort((a,b) => b.date.localeCompare(a.date) || (b.createdAt || 0) - (a.createdAt || 0));
-
-    const total = txs.reduce((s,t) => s + (t.type === "income" ? t.amount : -t.amount), 0);
-    $("recordCount").textContent = `${txs.length} RECORD${txs.length === 1 ? "" : "S"}`;
-    $("filteredTotal").textContent = `순합계 ${money(total)}`;
-
-    if (!txs.length) {
-      $("transactionList").innerHTML =
-        '<div class="empty"><b>NO DATA FOUND / 기록 없음</b>조건에 맞는 거래 내역이 없어.<br>첫 거래를 추가해 봐.</div>';
-      return;
-    }
-
-    $("transactionList").innerHTML = txs.map(t => `
-      <article class="transaction">
-        <div>
-          <div class="tx-title">${escapeHTML(t.memo || t.category)}</div>
-          <div class="tx-meta">
-            <span class="tx-cat">${escapeHTML(t.category)}</span>
-            <span>${escapeHTML(t.date)}</span>
-            <span>${t.type === "income" ? "수입" : "지출"}</span>
-          </div>
-        </div>
-        <div class="tx-right">
-          <div class="tx-amount ${t.type === "income" ? "income-text" : "expense-text"}">
-            ${t.type === "income" ? "+" : "−"}${money(t.amount)}
-          </div>
-          <div class="tx-actions">
-            <button type="button" data-edit="${escapeHTML(t.id)}">수정</button>
-            <button type="button" data-delete="${escapeHTML(t.id)}">삭제</button>
-          </div>
-        </div>
-      </article>
-    `).join("");
-  }
-
-  function render() {
-    renderCategories();
-    renderSummary();
-    renderTransactions();
-    document.querySelectorAll("[data-period]").forEach(b =>
-      b.classList.toggle("active", b.dataset.period === period)
-    );
-  }
-
-  function setType(newType) {
-    type = newType;
-    document.querySelectorAll("[data-type]").forEach(b =>
-      b.classList.toggle("active", b.dataset.type === type)
-    );
-    renderCategories();
-  }
-
-  // 계산기는 직접 입력한 산술식만 허용한다.
-  function evaluateExpression(source) {
-    let s = source.replace(/\s/g, "").replace(/×/g, "*").replace(/÷/g, "/").replace(/−/g, "-");
-    if (!s || !/^[\d.+\-*/()]+$/.test(s)) throw new Error("계산식을 확인해 줘.");
-    if (s.length > 100) throw new Error("계산식이 너무 길어.");
-    const tokens = s.match(/\d*\.?\d+|[()+\-*/]/g);
-    if (!tokens || tokens.join("") !== s) throw new Error("계산식을 확인해 줘.");
-
-    let i = 0;
-    function primary() {
-      if (tokens[i] === "+") { i++; return primary(); }
-      if (tokens[i] === "-") { i++; return -primary(); }
-      if (tokens[i] === "(") {
-        i++;
-        const v = sum();
-        if (tokens[i] !== ")") throw new Error("괄호를 확인해 줘.");
-        i++;
-        return v;
-      }
-      const token = tokens[i++];
-      if (!token || !/^\d*\.?\d+$/.test(token)) throw new Error("숫자를 확인해 줘.");
-      return Number(token);
-    }
-    function product() {
-      let v = primary();
-      while (tokens[i] === "*" || tokens[i] === "/") {
-        const op = tokens[i++];
-        const n = primary();
-        if (op === "/" && n === 0) throw new Error("0으로 나눌 수 없어.");
-        v = op === "*" ? v*n : v/n;
-      }
-      return v;
-    }
-    function sum() {
-      let v = product();
-      while (tokens[i] === "+" || tokens[i] === "-") {
-        const op = tokens[i++];
-        const n = product();
-        v = op === "+" ? v+n : v-n;
-      }
-      return v;
-    }
-    const result = sum();
-    if (i !== tokens.length || !Number.isFinite(result)) throw new Error("계산식을 확인해 줘.");
-    return result;
-  }
-
-  function refreshAmount() {
-    $("amount").value = expression;
-  }
-
-  function appendKey(key) {
-    if (key === "clear") {
-      expression = "";
-    } else if (key === "back") {
-      expression = expression.slice(0,-1);
-    } else if (key === "ans") {
-      expression += String(lastAnswer);
-    } else if (key === "=") {
-      try {
-        const result = evaluateExpression(expression);
-        lastAnswer = result;
-        expression = String(Math.round(result * 100) / 100);
-        $("calcHint").textContent = `계산 결과: ${Number(expression).toLocaleString("ko-KR")}`;
-      } catch (e) {
-        $("calcHint").textContent = e.message;
-      }
-    } else {
-      expression += key;
-    }
-    refreshAmount();
-  }
-
-  $("amount").addEventListener("input", e => {
-    expression = e.target.value.replace(/[^0-9.+\-*/()×÷−]/g, "");
-    if (e.target.value !== expression) refreshAmount();
-  });
-
-  document.querySelectorAll("[data-key]").forEach(b => {
-    b.addEventListener("click", () => appendKey(b.dataset.key));
-  });
-
-  $("shippingBtn").addEventListener("click", () => {
-    try {
-      const current = expression.trim() ? evaluateExpression(expression) : 0;
-      expression = String(Math.round((current - 1800) * 100) / 100);
-      lastAnswer = Number(expression);
-      refreshAmount();
-      $("calcHint").textContent = "배송비 1,800원을 차감했어.";
-    } catch (e) {
-      $("calcHint").textContent = e.message;
-    }
-  });
-
-  document.querySelectorAll("[data-type]").forEach(b =>
-    b.addEventListener("click", () => setType(b.dataset.type))
-  );
-
-  $("transactionForm").addEventListener("submit", e => {
-    e.preventDefault();
-
-    let amount;
-    try {
-      amount = evaluateExpression(expression);
-    } catch (err) {
-      notify(err.message || "금액을 확인해 줘.");
-      return;
-    }
-
-    if (!Number.isFinite(amount) || amount <= 0) {
-      notify("금액은 0원보다 커야 해.");
-      return;
-    }
-    if (amount > 1e15) {
-      notify("금액이 너무 커.");
-      return;
-    }
-
-    const category = $("category").value;
-    if (!category) {
-      notify("카테고리를 먼저 추가해 줘.");
-      return;
-    }
-
-    const record = {
-      id: editingId || `${Date.now()}-${Math.random().toString(36).slice(2,8)}`,
-      type,
-      amount: Math.round(amount * 100) / 100,
-      category,
-      date: $("date").value,
-      memo: $("memo").value.trim(),
-      createdAt: Date.now()
-    };
-
-    if (!record.date) {
-      notify("날짜를 입력해 줘.");
-      return;
-    }
-
-    if (editingId) {
-      const index = data.transactions.findIndex(t => t.id === editingId);
-      if (index >= 0) {
-        record.createdAt = data.transactions[index].createdAt || Date.now();
-        data.transactions[index] = record;
-      }
-      notify("거래 내역을 수정했어.");
-    } else {
-      data.transactions.push(record);
-      notify("거래 내역을 추가했어.");
-    }
-
-    saveData();
-    resetForm();
-    render();
-  });
-
-  function resetForm() {
-    editingId = null;
-    expression = "";
-    $("transactionForm").reset();
-    $("date").value = todayString();
-    $("calcHint").textContent = "계산식을 입력하거나 숫자 버튼을 눌러.";
-    $("formHeading").innerHTML = 'NEW TRANSACTION <small>입력 / 등록</small>';
-    $("submitBtn").textContent = "+ 거래 내역 추가";
-    $("cancelEdit").classList.add("hidden");
-    setType("expense");
-    renderCategories();
-    $("amount").value = "";
-  }
-
-  $("cancelEdit").addEventListener("click", resetForm);
-
-  $("transactionList").addEventListener("click", e => {
-    const editBtn = e.target.closest("[data-edit]");
-    const deleteBtn = e.target.closest("[data-delete]");
-
-    if (editBtn) {
-      const t = data.transactions.find(x => x.id === editBtn.dataset.edit);
-      if (!t) return;
-      editingId = t.id;
-      setType(t.type);
-      renderCategories();
-      $("category").value = t.category;
-      $("date").value = t.date;
-      $("memo").value = t.memo || "";
-      expression = String(t.amount);
-      refreshAmount();
-      $("formHeading").innerHTML = 'EDIT TRANSACTION <small>수정 모드</small>';
-      $("submitBtn").textContent = "변경 사항 저장";
-      $("cancelEdit").classList.remove("hidden");
-      $("formHeading").scrollIntoView({behavior:"smooth",block:"nearest"});
-      return;
-    }
-
-    if (deleteBtn) {
-      const id = deleteBtn.dataset.delete;
-      askConfirm("이 거래 내역을 삭제할까? 삭제한 내역은 되돌릴 수 없어.", () => {
-        data.transactions = data.transactions.filter(t => t.id !== id);
-        if (editingId === id) resetForm();
-        saveData();
-        render();
-        notify("거래 내역을 삭제했어.");
-      });
-    }
-  });
-
-  $("addCategory").addEventListener("click", () => {
-    $("newCategoryType").value = type;
-    $("newCategoryName").value = "";
-    $("categoryDialog").showModal();
-    $("newCategoryName").focus();
-  });
-
-  $("closeCategory").addEventListener("click", () => $("categoryDialog").close());
-
-  $("categoryForm").addEventListener("submit", e => {
-    e.preventDefault();
-    const t = $("newCategoryType").value;
-    const name = $("newCategoryName").value.trim();
-
-    if (!name) return;
-    if (data.categories[t].some(c => c.toLowerCase() === name.toLowerCase())) {
-      notify("이미 있는 카테고리야.");
-      return;
-    }
-
-    data.categories[t].push(name);
-    setType(t);
-    $("category").value = name;
-    saveData();
-    render();
-    $("categoryDialog").close();
-    notify("카테고리를 추가했어.");
-  });
-
-  $("categoryList").addEventListener("click", e => {
-    const btn = e.target.closest("[data-delete-cat]");
-    if (!btn) return;
-
-    const cat = btn.dataset.deleteCat;
-    const t = btn.dataset.catType;
-    const used = data.transactions.some(x => x.category === cat && x.type === t);
-    if (used) {
-      notify("거래 내역에 사용 중인 카테고리는 삭제할 수 없어.");
-      return;
-    }
-
-    askConfirm(`카테고리 '${cat}'을 삭제할까?`, () => {
-      data.categories[t] = data.categories[t].filter(c => c !== cat);
-      saveData();
-      render();
-      notify("카테고리를 삭제했어.");
-    });
-  });
-
-  function askConfirm(message, callback) {
-    pendingConfirm = callback;
-    $("confirmText").textContent = message;
-    $("confirmDialog").showModal();
-  }
-  $("confirmCancel").addEventListener("click", () => {
-    pendingConfirm = null;
-    $("confirmDialog").close();
-  });
-  $("confirmOK").addEventListener("click", () => {
-    const action = pendingConfirm;
-    pendingConfirm = null;
-    $("confirmDialog").close();
-    if (action) action();
-  });
-
-  $("prevMonth").addEventListener("click", () => {
-    currentMonth.setMonth(currentMonth.getMonth()-1);
-    render();
-  });
-  $("nextMonth").addEventListener("click", () => {
-    currentMonth.setMonth(currentMonth.getMonth()+1);
-    render();
-  });
-
-  $("search").addEventListener("input", renderTransactions);
-  $("filterType").addEventListener("change", renderTransactions);
-  $("filterCategory").addEventListener("change", renderTransactions);
-
-  document.querySelectorAll("[data-period]").forEach(b => {
-    b.addEventListener("click", () => {
-      period = b.dataset.period;
-      renderTransactions();
-      document.querySelectorAll("[data-period]").forEach(x =>
-        x.classList.toggle("active", x === b)
-      );
-    });
-  });
-
-  $("date").value = todayString();
-  render();
+function renderAll(){renderSelects();renderHome();renderHistory();renderCats()}
+$("date").value=today();
+renderAll();
 })();
 </script>
 </body>
